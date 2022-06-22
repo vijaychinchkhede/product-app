@@ -15,7 +15,7 @@
           <span>Mobile :  </span>
           <input v-model="mobile" placeholder="Mobile Number" type="number">
          </div>
-        
+         <span class="text-danger">{{mobileError}} </span>
         <div class="card-body">
         <span>Password :  </span>
            <input v-model="password" placeholder="password" type="password">
@@ -41,9 +41,23 @@ export default {
       emailerror:'',
       errormsg:'',
       mobile:'',
-      userDetails:''
+      userDetails:'',
+      mobileError:'',
     };
   },
+  watch: {
+   mobile(val){
+    if(val){
+      const mobile = val.toString();
+        if(mobile.length > 0 && (mobile.length > 10 || mobile.length < 10)){
+        this.mobileError = "Mobile number should be 10 digit";
+        }else{
+          this.mobileError = "";
+        }
+    }
+   }
+  },
+
   mounted(){
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
     if(this.userDetails){
@@ -52,7 +66,7 @@ export default {
   },
   methods: {
    register() {
-   if(this.emailerror == '' && this.password =='' && this.mobile =='' && this.email =='' && this.name==''){
+   if(this.emailerror == '' && this.password !='' && this.mobile !='' && this.email !='' && this.name!='' && this.mobileError == ''){
       axios.post('http://127.0.0.1:8000/api/register',{
        'name':this.name,
        'email':this.email,
@@ -62,6 +76,8 @@ export default {
       ).then((response) => {
       if(response.data.status =='200'){
           window.location.href = '/login';
+      }else{
+        const errors = response.data.errors;
       }
       })
       }
