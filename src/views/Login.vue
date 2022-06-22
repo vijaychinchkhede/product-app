@@ -14,6 +14,7 @@
           <button class="btn btn-success " @click="login">Login</button>
         </div>
       </div>
+      <span class="text-danger">{{errormsg}} </span>
     </div>
     <span> Dont have account, Please <a @click ="register" class="text-danger">click here</a> to register</span>
   </div>
@@ -26,7 +27,8 @@ export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      errormsg:"",
     };
   },
    mounted(){
@@ -50,6 +52,8 @@ export default {
           localStorage.setItem("userDetails", JSON.stringify(this.userDetails));
           localStorage.setItem("token", response.data.token);
            window.location.href = '/';
+      }else{
+        this.errormsg ="Invalid Credential"
       }
       })
     },

@@ -10,17 +10,18 @@
           <span>Email :  </span>
           <input v-model="email" @input="isEmailValid(email)" placeholder="xyz@gmail.com">
          </div>
+        <span class="text-danger">{{emailerror}} </span>
          <div class="card-body">
           <span>Mobile :  </span>
           <input v-model="mobile" placeholder="Mobile Number" type="number">
          </div>
-        <!-- <span class="text-danger">{{emailerror}} </span> -->
+        
         <div class="card-body">
         <span>Password :  </span>
            <input v-model="password" placeholder="password" type="password">
         </div>
         <div class="card-body">
-          <button class="btn btn-success " @click="register">Register</button>
+          <button class="btn btn-success " @click="register" :disabled="password =='' && mobile =='' && email =='' && name==''">Register</button>
         </div>
       </div>
     </div>
@@ -51,7 +52,7 @@ export default {
   },
   methods: {
    register() {
-   if(this.emailerror == ''){
+   if(this.emailerror == '' && this.password =='' && this.mobile =='' && this.email =='' && this.name==''){
       axios.post('http://127.0.0.1:8000/api/register',{
        'name':this.name,
        'email':this.email,
