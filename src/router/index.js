@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import('../views/About.vue')
   },
   {
     path: '/products',
@@ -70,7 +70,7 @@ const routes = [
     component: () => import('../views/Error.vue')
   },
   {
-    path: '/*',
+    path: '/:catchAll(.*)',
     name: 'Page Not Found',
     component: () => import('../views/NotFound.vue')
   }
@@ -88,8 +88,7 @@ router.beforeEach((to, from, next) => {
         next(); 
     } else {
        // window.location.href = '/login';
-       next();
-
+        next();
     } 
 });
 

@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand navbar-light bg-light">
     <div class="container">
-      <router-link to="/" class="navbar-brand">WELCOME TO PRODUCT-CART !!!  </router-link>
+      <router-link to="/" class="navbar-brand">WELCOME TO PRODUCT-CART !!! </router-link>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
           <router-link to="/" class="nav-link">
@@ -53,15 +53,22 @@
 </template>
 
 <script>
+
 export default {
   name: "Header",
   data() {
     return {
       userDetails: '',
       userStatus: 0,
+      header:'',
     };
   },
   mounted(){
+  if(localStorage.getItem('header')){
+    this.header = localStorage.getItem('header');
+  }else{
+    this.header = '' ;
+  }
   this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
 
   if(this.userDetails){

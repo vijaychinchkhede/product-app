@@ -2,7 +2,7 @@
   <div id="app">
       <div>
         <div class="card-body">
-          <span> Page Not Found </span>
+          <h1> Page Not Found </h1>
         </div>
       </div>
   </div>
