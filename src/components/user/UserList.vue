@@ -2,11 +2,11 @@
   <div class="container">
     <div class="row justify-content-center mt-2 mb-2">
       <div class="col-8">
-        <h4 class="text-left mb-2">Cart Items</h4>
+        <h4 class="text-left mb-2">Users</h4>
       </div>
       <div class="col-4">
         <input
-        :disabled="cartData.length == 0"
+        :disabled="userData.length == 0"
         type="text"
         class="form-control"
         placeholder="Search Products..."
@@ -21,23 +21,19 @@
           <tr>
             <th>Sr.No.</th>
             <th>Name</th>
-            <th>Details</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total Price</th>
+            <th>Type</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody class="text-center">
-          <tr v-for="(data, index) in cartData" :key="data.id">
+          <tr v-for="(data, index) in userData" :key="data.id">
             <td>{{ index + 1 }}</td>
-            <td>{{ data.product_name }}</td>
-            <td>{{ data.description }}</td>
-            <td>{{ formatNumber(data.price) }}</td>
-            <td>{{ data.quantity }}</td>
-            <td>{{ formatNumber(data.price*data.quantity) }}</td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.type }}</td>
+            <td>{{ data.status }}</td>
             <td>
-              <button  class="btn btn-danger ml-2" @click="removerProductFromCart(data.product_id)" title="Remove Product From Cart">
+              <button :disabled="data.type=='admin'" class="btn btn-danger ml-2" @click="deleteUser(data.id)" title="Delete User">
                  <i class="fa fa-trash"></i>
               </button>
             </td>
@@ -46,12 +42,9 @@
       </table>
     </div>
     <div v-if="!isLoading">
-      <div class="text-center" v-if='cartData.length == 0'>
+      <div class="text-center" v-if='userData.length == 0'>
         <span > No data found </span>
       </div>
-    </div>
-    <div class="text-center" v-if='cartData.length != 0'>
-      <button class="btn btn-success " @click="checkout">Checkout [ Total Price : {{formatNumber(total)}}]</button>
     </div>
     <div v-if="isLoading" class="text-center mt-5 mb-5">
       Loading Cart Products...
@@ -74,7 +67,7 @@
           search: "",
         },
         lineItems: [],
-        cartData:[],
+        userData:[],
         userDetails:'',
         total:0,
         isLoading:false,
@@ -82,9 +75,8 @@
     },
 
     mounted(){
-      localStorage.setItem('header','My Cart');
       this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
-      if(this.userDetails){
+      if(this.userDetails && this.userDetails.type =='admin'){
         this.isLoading = true;
         this.loadData();
       }else{
@@ -94,54 +86,32 @@
 
     methods: {
      loadData () {
-      this.total = 0;
-      axios.post('http://127.0.0.1:8000/api/getusercartitems',{
-        'user_id' :this.userDetails.user_id,
-        'name' : this.query.search,
+      this.isLoading = true;
+      axios.post('http://127.0.0.1:8000/api/getalluser',{
+      'name':this.query.search,
       }
       ).then((response) => {
         if(response.data.status == 200){
-          this.cartData = response.data.data;
-          if(this.cartData){
-            this.arrayLength = this.cartData.length;
-            var i = 0;
-            for(i;i<this.arrayLength;i++){
-              const obj = {'price': this.cartData[i].stripe_price_code, 
-              'quantity': this.cartData[i].quantity,};
-              this.lineItems.push(obj);
-              this.total = this.total+(this.cartData[i].price *this.cartData[i].quantity);
-              localStorage.setItem("cartData", JSON.stringify(this.cartData));
-              localStorage.setItem("lineItems", JSON.stringify(this.lineItems));
-              localStorage.setItem("totalPrice", this.total);
-            }
-          }
-
+          this.userData = response.data.data;
         }else{
-         this.cartData = [];
+         this.userData = [];
        }
        this.isLoading = false;
      })
     },
 
     searchProducts(){
-      if(this.query.search.length >=3 || this.query.search.length ==0 ){
+      if(this.query.search.length >=2 || this.query.search.length ==0 ){
         this.loadData();
       }
     },
-    checkout(){
-     this.$router.push({ name: "Checkout" });
-   },
-   formatNumber(number) {
-    return Intl.NumberFormat().format(number);
-  },
-  removerProductFromCart(id){
-      axios.post('http://127.0.0.1:8000/api/removeproductfromcart',{
-          'product_id' : id,
-          'user_id':this.userDetails.user_id,
+    deleteUser(id){
+      axios.post('http://127.0.0.1:8000/api/deleteuser',{
+          'user_id' : id,
         }).then((response) => {
           if(response.data.status == 200){
             this.$swal.fire({
-              text: "Product has been removed from cart successfully !",
+              text: "Success, User has been deleted successfully !",
               icon: "success",
               position: "center",
               width: 400,

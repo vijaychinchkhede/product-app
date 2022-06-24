@@ -59,7 +59,17 @@ const routes = [
     name: 'Order',
     component: () => import('../views/products/Order.vue')
   },
-   {
+  {
+    path: '/users',
+    name: 'Users',
+    component: () => import('../components/user/UserList.vue')
+  },
+  // {
+  //   path: '/allorders',
+  //   name: 'All Orders',
+  //   component: () => import('../components/order/OrderList.vue')
+  // },
+ {
     path: '/success',
     name: 'Payment Success',
     component: () => import('../views/Success.vue')

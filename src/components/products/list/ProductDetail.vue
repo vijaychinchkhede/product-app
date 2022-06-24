@@ -3,6 +3,7 @@
   <td>{{ product.name}}</td>
   <td>{{ product.description}}</td>
   <td>{{ formatNumber(product.price) }}</td>
+  <td v-if="userStatus == 1">{{ formatString(product.status)}}</td>
   <td v-if="userStatus==1" ><router-link :to="{ name: 'ProductEdit', params: { id: product.id } }"
     class="btn btn-primary" title="Edit Product">
     <i class="fa fa-pencil"></i></router-link>
@@ -120,6 +121,9 @@
       },
       formatNumber(number) {
         return Intl.NumberFormat().format(number);
+      },
+      formatString(string){
+        return string.toUpperCase();  
       }
 
     },

@@ -22,6 +22,7 @@
             <th>Name</th>
             <th>Details</th>
             <th>Price</th>
+            <th v-if="userStatus == 1">Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -55,29 +56,53 @@
         },
         productsData:[],
         isLoading:false,
+        userStatus:0
       };
     },
     components: {
       ProductDetail,
     },
     mounted(){
-      this.isLoading = true;
+    this.isLoading = true;
+    this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
+      if(this.userDetails){
+        this.userType = this.userDetails.userType;
+        if(this.userType =='admin'){
+          this.userStatus = 1;
+        }
+        if(this.userType =='user'){
+          this.userStatus = 2;
+        }
+      }
       this.loadData();
     },
 
     methods: {
       loadData () {
-        axios.post('http://127.0.0.1:8000/api/getallproduct',{
-          'name':this.query.search
+        if(this.userStatus == 1){
+          const url = 'http://127.0.0.1:8000/api/getallproduct';
+            axios.post(url,{
+            'name':this.query.search
+            }).then((response) => {
+              this.isLoading = false;
+              if(response.data.status == 200){
+                this.productsData = response.data.data;
+              }
+            })
+        }else{
+          const url = 'http://127.0.0.1:8000/api/getallactiveproduct';
+            axios.post(url,{
+            'name':this.query.search
+            }
+            ).then((response) => {
+              this.isLoading = false;
+              if(response.data.status == 200){
+                this.productsData = response.data.data;
+              }
+            })
         }
-        ).then((response) => {
-          this.isLoading = false;
-          if(response.data.status == 200){
-            this.productsData = response.data.data;
-          }
-
-
-        })
+        
+        
       },
       searchProducts(){
         if(this.query.search.length >=3 || this.query.search.length ==0 ){

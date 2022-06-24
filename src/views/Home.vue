@@ -1,13 +1,5 @@
 <template>
   <div class="home">
-    <div class="p-4">
-      <div class="row">
-        <div class="col-md-2">
-         
-        </div>
-       
-      </div>
-    </div>
     <div>
       <product-list-component></product-list-component>
     </div>

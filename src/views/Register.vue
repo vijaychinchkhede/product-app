@@ -8,24 +8,27 @@
         <div class="row justify-content-center mt-2 mb-2"> 
           <div class="text-center">
            <div class="card-body">
-            <input v-model="name" placeholder="Name">
+            <input v-model="name" placeholder="Name *">
           </div>
           <span class="text-danger">{{nameError}} </span>
           <div class="card-body">
-            <input v-model="email" @input="isEmailValid(email)" placeholder="Email">
+            <input v-model="email" @input="isEmailValid(email)" placeholder="Email *">
           </div>
           <div class="card-body">
-            <input v-model="mobile" placeholder="Mobile Number" type="number">
+            <input v-model="mobile" placeholder="Mobile Number *" type="number">
           </div>
           <span class="text-danger">{{mobileError}} </span>
           <div class="card-body">
-           <input v-model="password" placeholder="password" type="password">
+           <input v-model="password" placeholder="password *" type="password">
          </div>
          <div class="card-body">
           <button class="btn btn-success " @click="register" :disabled="password ==''">Register</button>
         </div>
+        <div class="text-center">
+          <span > Already have account, Please <a @click ="loginPage" class="text-danger">click here</a> to login</span>
+        </div>
       </div>
-  </div>
+    </div>
   </div>
   <div class="col">
   </div>
@@ -89,14 +92,14 @@
      ).then((response) => {
       if(response.data.status =='200'){
         this.$swal.fire({
-                text: "Usre registered successfuly !",
-                icon: "success",
-                position: "center",
-                width: 400,
-                height: 100,
-                padding: '3em',
-                timer: 1000,
-              });
+          text: "Usre registered successfuly !",
+          icon: "success",
+          position: "center",
+          width: 400,
+          height: 100,
+          padding: '3em',
+          timer: 1000,
+        });
         window.location.href = '/login';
       }else{
         const errors = response.data.errors;
@@ -110,17 +113,20 @@
     /^[a-zA-Z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1}([a-zA-Z0-9][\-_\.\+\!\#\$\%\&\'\*\/\=\?\^\`\{\|]{0,1})*[a-zA-Z0-9]@[a-zA-Z0-9][-\.]{0,1}([a-zA-Z][-\.]{0,1})*[a-zA-Z0-9]\.[a-zA-Z0-9]{1,}([\.\-]{0,1}[a-zA-Z]){0,}[a-zA-Z0-9]{0,}$/i
     )
 
-  if(email){
-    if(emailRegexp.test(email)){
-      this.emailerror = "";
+    if(email){
+      if(emailRegexp.test(email)){
+        this.emailerror = "";
+      }else{
+        this.emailerror = "Please enter valid email";
+      }
     }else{
-      this.emailerror = "Please enter valid email";
+      this.emailerror = "Please enter email";
     }
-  }else{
-    this.emailerror = "Please enter email";
-  }
-  return emailRegexp.test(email)
-}
+    return emailRegexp.test(email)
+  },
+  loginPage(){
+    this.$router.push({ name: "Login" });
+  },
 
 }
 };

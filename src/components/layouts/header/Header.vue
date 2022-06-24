@@ -4,27 +4,10 @@
       <router-link to="/" class="navbar-brand">WELCOME TO PRODUCT-CART !!! </router-link>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <router-link to="/" class="nav-link">
-          <i class="fa fa-home"></i>
-          Home</router-link>
-        </li>
-        <li class="nav-item" v-if="userStatus == 2">
-          <router-link to="/cart" class="nav-link">
-            <i class="fa fa-shopping-cart"></i>
-            Cart
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="userStatus == 2">
-          <router-link to="/order" class="nav-link">
-            <i class="fa fa-shopping-bag"></i>
-            Order
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="userStatus == 1">
-          <router-link to="/products/create" class="nav-link">
-            <i class="fa fa-plus-circle"></i> Add
-          </router-link>
-        </li>
+              <router-link to="/" class="nav-link">
+              <i class="fa fa-home"></i>
+              Home</router-link>
+         </li>
         <li class="nav-item">
           <router-link to="/about" class="nav-link">
           <i class="fa fa-info-circle"></i>
@@ -40,11 +23,6 @@
           <i class="fa fa-user"></i>
           Login</router-link>
         </li>
-         <li class="nav-item" v-if="userStatus != 0">
-            <a class="nav-link" @click="logout">
-              <i class="fa fa-user-o" aria-hidden="true"></i>
-             Logout</a>
-         </li>
         
       </div>
     </div>
@@ -64,11 +42,6 @@ export default {
     };
   },
   mounted(){
-  if(localStorage.getItem('header')){
-    this.header = localStorage.getItem('header');
-  }else{
-    this.header = '' ;
-  }
   this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
 
   if(this.userDetails){
