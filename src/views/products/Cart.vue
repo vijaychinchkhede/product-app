@@ -29,15 +29,16 @@
           </tr>
         </thead>
         <tbody class="text-center">
-          <tr v-for="(data, index) in cartData" :key="data.id">
+          <tr v-for="(data, index) in cartData" :key="data.cart_id">
             <td>{{ index + 1 }}</td>
             <td>{{ data.product_name }}</td>
             <td>{{ data.description }}</td>
             <td>{{ formatNumber(data.price) }}</td>
-            <td>{{ data.quantity }}</td>
+            <td><a class="btn" @click="updateQuantity(e=2,data.cart_id)" v-if="data.quantity >1"><i class="fa fa-minus" aria-hidden="true"></i>  </a>{{ data.quantity }}<a class="btn" @click="updateQuantity(e=1,data.cart_id)"> <i class="fa fa-plus" aria-hidden="true"></i>
+            </a></td>
             <td>{{ formatNumber(data.price*data.quantity) }}</td>
             <td>
-              <button  class="btn btn-danger ml-2" @click="removerProductFromCart(data.product_id)" title="Remove Product From Cart">
+              <button  class="btn btn-danger ml-2" @click="removeProductFromCart(data.product_id)" title="Remove Product From Cart">
                  <i class="fa fa-trash"></i>
               </button>
             </td>
@@ -134,7 +135,7 @@
    formatNumber(number) {
     return Intl.NumberFormat().format(number);
   },
-  removerProductFromCart(id){
+  removeProductFromCart(id){
       axios.post('http://127.0.0.1:8000/api/removeproductfromcart',{
           'product_id' : id,
           'user_id':this.userDetails.user_id,
@@ -142,6 +143,32 @@
           if(response.data.status == 200){
             this.$swal.fire({
               text: "Product has been removed from cart successfully !",
+              icon: "success",
+              position: "center",
+              width: 400,
+              height: 100,
+              padding: '3em',
+              timer: 1000,
+            });
+            this.loadData();
+          }else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong!',
+              timer: 1000,
+            })
+          }
+        })
+    },
+    updateQuantity(e,id){
+      axios.put('http://127.0.0.1:8000/api/updatecartproductquantity',{
+          'cart_id' : id,
+          'updateStatus':e,
+        }).then((response) => {
+          if(response.data.status == 200){
+            this.$swal.fire({
+              text: "Product quantity has been updated successfully !",
               icon: "success",
               position: "center",
               width: 400,

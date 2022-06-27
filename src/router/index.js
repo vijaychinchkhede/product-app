@@ -64,11 +64,11 @@ const routes = [
     name: 'Users',
     component: () => import('../components/user/UserList.vue')
   },
-  // {
-  //   path: '/allorders',
-  //   name: 'All Orders',
-  //   component: () => import('../components/order/OrderList.vue')
-  // },
+  {
+    path: '/allorders',
+    name: 'All Orders',
+    component: () => import('../components/orders/OrderList.vue')
+  },
  {
     path: '/success',
     name: 'Payment Success',

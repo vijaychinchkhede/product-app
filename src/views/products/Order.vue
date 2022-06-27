@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="container mt-3">
-      <h2> My Orders</h2>
+      <h4> My Orders</h4>
       <table class="table table-striped">
         <thead class="text-center">
           <tr>
@@ -10,15 +10,20 @@
             <th>Status</th>
             <th>Price</th>
             <th>Date</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody class="text-center">
           <tr v-for="(data, index) in orderData" :key="data.id">
             <td>{{ index + 1 }}</td>
             <td>{{ data.products ? data.products :'--' }}</td>
-            <td>{{ data.status }}</td>
+            <td class="text-capitalize">{{ data.status }}</td>
             <td>{{ formatNumber(data.amount_paid) }}</td>
             <td>{{ data.order_at }}</td>
+            <td>
+              <button v-if="data.status =='order'"  class="btn btn-danger ml-2" @click="cancelOrder(data.id)" title="Cancel Order"> <i class="fa fa-close"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -86,6 +91,28 @@
    },
    formatNumber(number) {
     return Intl.NumberFormat().format(number);
+  },
+  cancelOrder(id){
+    axios.put('http://127.0.0.1:8000/api/updateorderstatus',{
+        'order_id': id,
+      }
+      ).then((response) => {
+        if(response.data.status == 200){
+          this.$swal.fire({
+              text: "Order has been cancelled successfully !",
+              icon: "success",
+              position: "center",
+              width: 400,
+              height: 100,
+              padding: '3em',
+              timer: 1000,
+            });
+            this.loadData();
+        }else{
+         this.orderData = [];
+       }
+       this.isLoading = false;
+     })
   }
 },
 

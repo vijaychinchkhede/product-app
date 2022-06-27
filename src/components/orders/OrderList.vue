@@ -2,17 +2,17 @@
   <div class="container">
     <div class="row justify-content-center mt-2 mb-2">
       <div class="col-8">
-        <h4 class="text-left mb-2">Users</h4>
+        <h4 class="text-left mb-2">All Order</h4>
       </div>
       <div class="col-4">
-        <input
+        <!-- <input
         :disabled="userData.length == 0"
         type="text"
         class="form-control"
-        placeholder="Search User..."
+        placeholder="Search Products..."
         @input="searchProducts"
         v-model="query.search"
-        />
+        /> -->
       </div>
     </div>
     <div class="container mt-3">
@@ -20,22 +20,20 @@
         <thead class="text-center">
           <tr>
             <th>Sr.No.</th>
-            <th>Name</th>
-            <th>Type</th>
+            <th>User Name</th>
+            <th>Order Product</th>
+            <th>Amount</th>
             <th>Status</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody class="text-center">
           <tr v-for="(data, index) in userData" :key="data.id">
             <td>{{ index + 1 }}</td>
             <td>{{ data.name }}</td>
-            <td>{{ data.type }}</td>
-            <td>{{ data.status }}</td>
-            <td>
-              <button :disabled="data.type=='admin'" class="btn btn-danger ml-2" @click="deleteUser(data.id)" title="Delete User">
-                 <i class="fa fa-trash"></i>
-              </button>
+            <td>{{ data.products }}</td>
+            <td>{{ formatNumber(data.amount_paid) }}</td>
+            <td class ="text-capitalize">
+                {{data.status}}
             </td>
           </tr>
         </tbody>
@@ -47,7 +45,7 @@
       </div>
     </div>
     <div v-if="isLoading" class="text-center mt-5 mb-5">
-      Loading Cart Products...
+      Loading Orders...
       <div class="spinner-grow" role="status">
         <span class="sr-only">Loading...</span>
       </div>
@@ -66,6 +64,12 @@
           page: 1,
           search: "",
         },
+        options:[
+        'order','cancel'
+        ],
+        data:[
+        'status'
+        ],
         lineItems: [],
         userData:[],
         userDetails:'',
@@ -87,7 +91,7 @@
     methods: {
      loadData () {
       this.isLoading = true;
-      axios.post('http://127.0.0.1:8000/api/getalluser',{
+      axios.post('http://127.0.0.1:8000/api/getalluserorder',{
       'name':this.query.search,
       }
       ).then((response) => {
@@ -105,33 +109,14 @@
         this.loadData();
       }
     },
-    deleteUser(id){
-      axios.post('http://127.0.0.1:8000/api/deleteuser',{
-          'user_id' : id,
-        }).then((response) => {
-          if(response.data.status == 200){
-            this.$swal.fire({
-              text: "Success, User has been deleted successfully !",
-              icon: "success",
-              position: "center",
-              width: 400,
-              height: 100,
-              padding: '3em',
-              timer: 1000,
-            });
-            this.loadData();
-          }else{
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong!',
-              timer: 1000,
-            })
-          }
-        })
-    }
+    formatNumber(number) {
+      return Intl.NumberFormat().format(number);
+    },
 },
 
 
 };
 </script>
+<style type="text/css">
+
+</style>

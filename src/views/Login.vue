@@ -15,15 +15,21 @@
          </div>
          <div class="text-center">
           <br>
-          <button class="btn btn-success " @click="login">Login</button>
+          <button :disabled="password=='' && username==''" class="btn btn-success " @click="login">Login</button>
          </div>
-         <span class="text-danger">{{errormsg}} </span><br>
          <div class="text-center">
-          <span > Dont have account, Please <a @click ="register" class="text-danger">click here</a> to register</span>
+          <br>
+          <span > Don't have account, Please <a @click ="register" class="text-danger">click here</a> to register</span>
          </div>
         </div>
       </div>
       <div class="col">
+        <div class="pull-right" v-if="errormsg">
+           <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Error!</strong> Invalid Credentials.
+              <button type="button" @click="dissableError" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -35,8 +41,8 @@
     name: "App",
     data() {
       return {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
         errormsg:"",
       };
     },
@@ -46,30 +52,42 @@
         window.location.href = '/';
       }
 
+        window.setInterval(() => {
+       if(this.errormsg){
+        this.errormsg ='';
+      }
+        }, 3000)
+      
+
+
     },
     methods: {
+
      login() {
-       this.fields =[];
-       this.fields.username = this.username;
-       this.fields.password = this.password;
+       if(this.username !='' && this.password !=''){
        axios.post('http://127.0.0.1:8000/api/login',{
          'username':this.username,
          'password':this.password,
-       }
-       ).then((response) => {
+       }).then((response) => {
         if(response.data.status =='success'){
          this.userDetails = response.data.userDetails;
          localStorage.setItem("userDetails", JSON.stringify(this.userDetails));
          localStorage.setItem("token", response.data.token);
          window.location.href = '/';
-       }else{
-        this.errormsg ="Invalid Credential"
+        }else{
+          this.errormsg ="Invalid Credential";
+          }
+        })
       }
-    })
      },
      register(){
       this.$router.push({ name: "Register" });
     },
+    dissableError(){
+      this.errormsg='';
+      this.username = '';
+      this.password ='';
+    }
   }
 };
 </script>

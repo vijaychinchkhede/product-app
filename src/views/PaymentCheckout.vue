@@ -1,6 +1,27 @@
 <template>
   <div class="container">
-    <div class="row justify-content-center mt-2 mb-2"> 
+  <div class="text-align-center">
+      <span> Name : {{userDetails.name}}</span>
+    <div>
+      <span> Email : {{userDetails.email}} </span>
+    </div>
+    <div>
+    <br>
+    <div> <dt class="col-sm-3">Term and Condition : </dt>  </div>
+      <span>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </span>
+    </div>
+    <div>
+    <input
+      v-model="status"
+      type="checkbox"
+      value="1"
+      name="status"/>
+      <span> I accept the term and condition</span>
+  </div>
+  </div>  
+    <div class="row justify-content-center mt-2 mb-2" v-if="status == 1"> 
         <stripe-checkout
           ref="checkoutRef"
           mode="payment"
@@ -12,9 +33,12 @@
         />
         <button class="btn btn-success " @click="submit">Buy now [ Total Price : {{totalPrice}}]</button>
     </div>
+    <div v-if="showError ==1" class="alert alert-danger"><strong>Error</strong>! please accept the term and condition.</div>
+    <div class="row justify-content-center mt-2 mb-2" v-if="status != 1"> 
+        <button class="btn btn-success " @click="submitError">Buy now [ Total Price : {{totalPrice}}]</button>
+    </div>
   </div> 
 </template>
-
 <script>
 import axios from "axios";
 import { StripeCheckout } from '@vue-stripe/vue-stripe';
@@ -28,10 +52,19 @@ export default {
       cancelURL: 'http://localhost:8080/error',
       userDetails:'',
       totalPrice:0,
+      status:'',
+      showError:0,
     };
   },
   components: {
     StripeCheckout,
+  },
+  watch:{
+  status(val){
+    if(val == true){
+    this.showError = 0;
+    }
+  }
   },
   mounted(){
   
@@ -67,6 +100,9 @@ export default {
           this.isLoading = false;
         })
       },
+      submitError(){
+        this.showError = 1;
+      }
   },
 
  
