@@ -69,6 +69,12 @@ const routes = [
     name: 'All Orders',
     component: () => import('../components/orders/OrderList.vue')
   },
+  {
+    path: '/product/category',
+    name: 'Product Category',
+    component: () => import('../components/products/list/ProductListCategory.vue')
+  },
+  
  {
     path: '/success',
     name: 'Payment Success',

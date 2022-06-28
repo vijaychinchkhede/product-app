@@ -6,7 +6,7 @@
       </div>
       <div class="col-4">
         <input
-        :disabled="cartData.length == 0"
+        :disabled="cartData.length == 0 && this.query.search.length ==0"
         type="text"
         class="form-control"
         placeholder="Search Products..."

@@ -1,9 +1,7 @@
 <template>
   <div class="container">
+    <h4>Edit Product</h4>
     <div class="card">
-      <div class="card-header">
-        <h6>Edit Product</h6>
-      </div>
       <div class="card-body">
         <div v-if="productDetail !== null">
           <div class="form-group row">
@@ -25,8 +23,10 @@
               type="number"
               class="form-control"
               v-model="price"
+               @input="numberValidate"
               />
               <ErrorMessage name="price" class="text-danger" />
+              <span class="text-danger">{{priceError}}</span>
             </div>
           </div>
           <div class="form-group row">
@@ -57,10 +57,9 @@
               <router-link to="/products" class="btn btn-secondary mr-2"
               >Cancel</router-link
               >
-              <span> | </span>
               <input
               type="submit"
-              class="btn btn-primary"
+              class="btn btn-primary ms-2"
               value="Update"
               v-if="!isUpdating"
               @click="updateProduct"
@@ -102,6 +101,7 @@
         'ACTIVE','INACTIVE'
         ],
         statusError:'',
+        priceError:'',
       };
     },
     components: {
@@ -142,7 +142,7 @@
      })
     },
     updateProduct(){
-      if(this.statusError == ''){
+      if(this.statusError == '' && this.priceError == ''){
         axios.post('http://127.0.0.1:8000/api/updateproductdetails',{
           'product_id' : this.id,
           'name': this.name,
@@ -172,6 +172,13 @@
         })
       }
     },
+     numberValidate(){
+      if(this.price < 0){
+        this.priceError = "Price is not valid";
+      }else{
+        this.priceError = '';
+      }
+    }
 
   },
 

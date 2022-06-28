@@ -7,8 +7,7 @@
   <td v-if="userStatus==1" ><router-link :to="{ name: 'ProductEdit', params: { id: product.id } }"
     class="btn btn-primary" title="Edit Product">
     <i class="fa fa-pencil"></i></router-link>
-    |
-    <button class="btn btn-danger ml-2" @click="deleteProduct(product.id)" title="Delete Product">
+    <button class="btn btn-danger ml-2 ms-2" @click="deleteProduct(product.id)" title="Delete Product">
      <i class="fa fa-trash"></i>
    </button>
   </td>

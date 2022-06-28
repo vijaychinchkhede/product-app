@@ -1,9 +1,7 @@
 <template>
   <div class="container">
+  <h4>Add Product</h4>
     <div class="card">
-      <div class="card-header">
-        <h6>Add Product</h6>
-      </div>
       <div class="card-body">
         <Form @submit="onSubmit" :validation-schema="schema">
           <div class="form-group row">
@@ -25,12 +23,15 @@
                 type="number"
                 class="form-control"
                 v-model="product.price"
+                @input="numberValidate"
               />
               <ErrorMessage name="price" class="text-danger" />
+              <span class="text-danger">{{priceError}}</span>
+              
             </div>
           </div>
           <div class="form-group row">
-            <div class="col-12">
+            <div class="col-6">
               <label>Product Details:</label>
               <Field
                 name="description"
@@ -40,6 +41,17 @@
                />
               <ErrorMessage name="description" class="text-danger" />
             </div>
+            <div class="col-6">
+              <label>Product Category:  <span class="text-danger">*</span></label>
+              <vue-select
+              v-model="productCategory"
+              :options="options"
+              label-by="label"
+              index="value" 
+              close-on-select
+              ></vue-select>
+              <span class="text-danger">{{categoryError}}</span>
+            </div>
           </div>
           <div class="text-center">
             <br>
@@ -47,10 +59,9 @@
               <router-link to="/products" class="btn btn-secondary mr-2"
                 >Cancel</router-link
               >
-            <span> | </span>  
               <input
                 type="submit"
-                class="btn btn-primary"
+                class="btn btn-primary ms-2"
                 value="Add Product"
                 v-if="!isCreating"
               />
@@ -80,6 +91,12 @@ export default {
     return {
       product: {},
       isCreating:false,
+      priceError:'',
+      productCategory:'',
+      options:[{'value':1,'label':'Mobile'},
+        {'value':2,'label':'Tablet'},
+        ],
+        categoryError:'',
     };
   },
 
@@ -88,42 +105,55 @@ export default {
     Form,
     ErrorMessage,
   },
-
-  
-  methods: {
-    
-    onSubmit() {
-
-      axios.post('http://127.0.0.1:8000/api/addproduct',{
-          'name':this.product.name,
-      'price':this.product.price,
-      'description':this.product.description,
-          }).then((response) => {
-          if(response.data.status == 200){
-            this.$swal.fire({
-              text: "Success, Product has been added successfully !",
-              icon: "success",
-              position: "center",
-              width: 400,
-              height: 100,
-              padding: '3em',
-              timer: 1000,
-            });
-             this.$router.push({ name: "Products" });
-          }else{
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong!',
-              timer: 1000,
-            })
-          }
-        })
+   watch: {
+     productCategory(val){
+      if(val){
+        this.categoryError = '';
+      }else{
+        this.categoryError = 'Please select product category';
+      }
     }
   },
 
-  watch: {
-   
+  methods: {
+    
+    onSubmit() {
+      if(this.priceError == '' && this.categoryError ==''){
+        axios.post('http://127.0.0.1:8000/api/addproduct',{
+            'name':this.product.name,
+            'price':this.product.price,
+            'description':this.product.description,
+            'category':this.productCategory.value,
+            }).then((response) => {
+            if(response.data.status == 200){
+              this.$swal.fire({
+                text: "Success, Product has been added successfully !",
+                icon: "success",
+                position: "center",
+                width: 400,
+                height: 100,
+                padding: '3em',
+                timer: 1000,
+              });
+               this.$router.push({ name: "Products" });
+            }else{
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                timer: 1000,
+              })
+            }
+          })
+        }
+    },
+    numberValidate(){
+      if(this.product.price < 0){
+        this.priceError = "Price is not valid";
+      }else{
+        this.priceError = '';
+      }
+    }
   },
 
   setup() {
@@ -140,3 +170,35 @@ export default {
   },
 };
 </script>
+<style type="text/css">
+  .vue-select {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 364px;
+    height: 40px;
+    border-radius: 2px;
+    /* border: 1px solid #999; */
+    box-sizing: border-box;
+    outline: 0;
+  }
+  .vue-select[data-is-focusing=false][aria-disabled=false] .vue-input input, input[readonly] {
+    cursor: default;
+    height: 21px;
+    text-align: center;
+  }
+  .vue-input input[readonly], .vue-select-header .vue-input input[disabled] {
+    background-color: unset;
+  }
+  .vue-input input {
+    border: 0;
+    outline: 0;
+    font-size: 1.0rem;
+  }
+  .vue-dropdown, .vue-input input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+  }
+</style>

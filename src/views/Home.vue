@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-  <div style="background: skyblue;">
+  <div v-if="userDetails ==''" style="background: skyblue;">
     <div class="text-center" >
       <span class="fs-5 d-none d-sm-inline"><img src="/icon.png" class="icon-style" /> Welcome To Product-Cart !!!</span>
       <hr>
@@ -17,9 +17,13 @@ import ProductListComponent from '../components/products/list/ProductListCompone
 export default {
   components: { ProductListComponent },
   name: "Home",
-
+  data() {
+      return {
+        userDetails: '',
+      };
+    },
   mounted(){
- 
+ this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
   },
 
   methods: {

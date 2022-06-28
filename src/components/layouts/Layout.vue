@@ -16,9 +16,19 @@
               Home</router-link>
             </li>
             <li class="nav-items">
-              <router-link to="/products" class="nav-link">
+             <!--  <router-link to="/products" class="nav-link">
+                
+              Products</router-link> -->
+
+              <a class="nav-link dropdown-toggle" href="/products" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-archive"></i>
-              Products</router-link>
+                Product
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="/product/category" @click="productCategory(e=1)">Mobile</a></li>
+                <li><a class="dropdown-item" href="/product/category" @click="productCategory(e=2)">Tablet</a></li>
+                <!-- <li><hr class="dropdown-divider"></li> -->
+              </ul> 
             </li>
             <li class="nav-item" v-if="userStatus == 1">
               <router-link to="/users" class="nav-link">
@@ -76,6 +86,8 @@
 </template>
 
 <script>
+  import "bootstrap/dist/css/bootstrap.min.css"
+  import "bootstrap/dist/js/bootstrap.min.js"
   import Footer from "./footer/Footer";
   import Header from "./header/Header";
   export default {
@@ -112,6 +124,9 @@
         localStorage.clear();
         window.location.href = '/';
        //window.location.reload();
+     },
+     productCategory(e){
+      localStorage.setItem('productCategory',e);
      }
    }
  };
@@ -124,5 +139,21 @@
 .icon-style{
     vertical-align: middle; 
     height: 50px;
+}
+.dropdown-menu {
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    min-width: 10rem;
+    padding: 0rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #34eef7;
+    background-clip: padding-box;
+    border: 1pxsolidrgba(0,0,0,.15);
+    border-radius: .25rem;
 }
 </style>

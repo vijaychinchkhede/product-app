@@ -6,11 +6,11 @@
       </div>
       <div class="col-4">
         <input
-        :disabled="userData.length == 0"
+        :disabled="userData.length == 0 && this.query.search.length ==0"
         type="text"
         class="form-control"
         placeholder="Search User..."
-        @input="searchProducts"
+        @input="searchUser"
         v-model="query.search"
         />
       </div>
@@ -30,10 +30,10 @@
           <tr v-for="(data, index) in userData" :key="data.id">
             <td>{{ index + 1 }}</td>
             <td>{{ data.name }}</td>
-            <td>{{ data.type }}</td>
-            <td>{{ data.status }}</td>
+            <td class="text-capitalize">{{ data.type }}</td>
+            <td class="text-capitalize">{{ data.status }}</td>
             <td>
-              <button :disabled="data.type=='admin'" class="btn btn-danger ml-2" @click="deleteUser(data.id)" title="Delete User">
+              <button v-if="data.type !='admin'" class="btn btn-danger ml-2" @click="deleteUser(data.id)" title="Delete User">
                  <i class="fa fa-trash"></i>
               </button>
             </td>
@@ -100,7 +100,7 @@
      })
     },
 
-    searchProducts(){
+    searchUser(){
       if(this.query.search.length >=2 || this.query.search.length ==0 ){
         this.loadData();
       }
