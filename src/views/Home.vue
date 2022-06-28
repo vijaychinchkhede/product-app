@@ -1,5 +1,11 @@
 <template>
   <div class="home">
+  <div style="background: skyblue;">
+    <div class="text-center" >
+      <span class="fs-5 d-none d-sm-inline"><img src="/icon.png" class="icon-style" /> Welcome To Product-Cart !!!</span>
+      <hr>
+    </div>
+  </div>
     <div>
       <product-list-component></product-list-component>
     </div>

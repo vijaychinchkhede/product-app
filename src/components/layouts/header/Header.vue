@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand navbar-light bg-light">
     <div class="container">
-      <router-link to="/" class="navbar-brand">WELCOME TO PRODUCT-CART !!! </router-link>
+      <div> </div>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
               <router-link to="/" class="nav-link">

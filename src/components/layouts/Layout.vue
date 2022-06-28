@@ -15,15 +15,20 @@
                 <i class="fa fa-home"></i>
               Home</router-link>
             </li>
+            <li class="nav-items">
+              <router-link to="/products" class="nav-link">
+                <i class="fa fa-archive"></i>
+              Products</router-link>
+            </li>
             <li class="nav-item" v-if="userStatus == 1">
               <router-link to="/users" class="nav-link">
-                <i class="fa fa-user-circle-o"></i>
+                <i class="fa fa-users"></i>
                 Users
               </router-link>
             </li>
             <li class="nav-item" v-if="userStatus == 1">
               <router-link to="/allorders" class="nav-link">
-                <i class="fa fa-user-circle-o"></i>
+                <i class="fa fa-truck"></i>
                 Orders
               </router-link>
             </li>
@@ -61,7 +66,6 @@
             </li>
           </ul>
           <hr>
-
         </div>
       </div>
       <div class="col py-3">

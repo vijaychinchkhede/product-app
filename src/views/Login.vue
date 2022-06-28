@@ -53,9 +53,9 @@
       }
 
         window.setInterval(() => {
-       if(this.errormsg){
-        this.errormsg ='';
-      }
+           if(this.errormsg){
+            this.errormsg ='';
+          }
         }, 3000)
       
 
