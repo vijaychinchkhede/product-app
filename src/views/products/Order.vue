@@ -70,7 +70,15 @@
      loadData () {
       axios.post('http://127.0.0.1:8000/api/getallorderofuser',{
         'user_id': this.userDetails.user_id,
-      }
+      },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }
       ).then((response) => {
         if(response.data.status == 200){
           this.orderData = response.data.data;
@@ -90,12 +98,23 @@
      this.$router.push({ name: "Checkout" });
    },
    formatNumber(number) {
-    return Intl.NumberFormat().format(number);
+     return Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+        }).format(number);
   },
   cancelOrder(id){
     axios.put('http://127.0.0.1:8000/api/updateorderstatus',{
         'order_id': id,
-      }
+      },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }
       ).then((response) => {
         if(response.data.status == 200){
           this.$swal.fire({
@@ -108,6 +127,9 @@
               timer: 1000,
             });
             this.loadData();
+        }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
         }else{
          this.orderData = [];
        }

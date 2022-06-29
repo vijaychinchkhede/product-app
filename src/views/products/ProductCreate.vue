@@ -6,7 +6,7 @@
         <Form @submit="onSubmit" :validation-schema="schema">
           <div class="form-group row">
             <div class="col-6">
-              <label>Product Name:</label>
+              <label>Product Name: <span class="text-danger">*</span></label>
               <Field
                 id="name"
                 name="name"
@@ -17,22 +17,19 @@
               <ErrorMessage name="name" class="text-danger" />
             </div>
             <div class="col-6">
-              <label>Product Price:</label>
+              <label>Product Price: <span class="text-danger">*</span></label>
               <Field
                 name="price"
                 type="number"
                 class="form-control"
                 v-model="product.price"
-                @input="numberValidate"
               />
               <ErrorMessage name="price" class="text-danger" />
-              <span class="text-danger">{{priceError}}</span>
-              
             </div>
           </div>
           <div class="form-group row">
             <div class="col-6">
-              <label>Product Details:</label>
+              <label>Product Details: <span class="text-danger">*</span></label>
               <Field
                 name="description"
                 as="textarea"
@@ -50,6 +47,7 @@
               index="value" 
               close-on-select
               ></vue-select>
+              <ErrorMessage name="productCategory" class="text-danger" />
               <span class="text-danger">{{categoryError}}</span>
             </div>
           </div>
@@ -91,7 +89,6 @@ export default {
     return {
       product: {},
       isCreating:false,
-      priceError:'',
       productCategory:'',
       options:[{'value':1,'label':'Mobile'},
         {'value':2,'label':'Tablet'},
@@ -108,6 +105,7 @@ export default {
    watch: {
      productCategory(val){
       if(val){
+        localStorage.setItem('productCategory',val.value);
         this.categoryError = '';
       }else{
         this.categoryError = 'Please select product category';
@@ -118,13 +116,21 @@ export default {
   methods: {
     
     onSubmit() {
-      if(this.priceError == '' && this.categoryError ==''){
+      if(this.categoryError ==''){
         axios.post('http://127.0.0.1:8000/api/addproduct',{
             'name':this.product.name,
             'price':this.product.price,
             'description':this.product.description,
             'category':this.productCategory.value,
-            }).then((response) => {
+            },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
             if(response.data.status == 200){
               this.$swal.fire({
                 text: "Success, Product has been added successfully !",
@@ -135,7 +141,10 @@ export default {
                 padding: '3em',
                 timer: 1000,
               });
-               this.$router.push({ name: "Products" });
+               this.$router.push({ path: "/product/category" });
+            }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
             }else{
               Swal.fire({
                 icon: 'error',
@@ -147,20 +156,14 @@ export default {
           })
         }
     },
-    numberValidate(){
-      if(this.product.price < 0){
-        this.priceError = "Price is not valid";
-      }else{
-        this.priceError = '';
-      }
-    }
+   
   },
 
   setup() {
     // Define a validation schema
     const schema = yup.object({
-      name: yup.string().required().min(5),
-      price: yup.string().required(),
+      name: yup.string().required().min(3),
+      price: yup.number().required().positive().integer(),
       description: yup.string().required().min(5),
     });
 

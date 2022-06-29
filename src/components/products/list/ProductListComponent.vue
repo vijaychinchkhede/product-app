@@ -83,22 +83,45 @@
           const url = 'http://127.0.0.1:8000/api/getallproduct';
             axios.post(url,{
             'name':this.query.search
-            }).then((response) => {
+            },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+              }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
               }
             })
         }else{
           const url = 'http://127.0.0.1:8000/api/getallactiveproduct';
             axios.post(url,{
-            'name':this.query.search
+            'name':this.query.search,
+            "token" : localStorage.token, 
+            },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
             }
+          }
             ).then((response) => {
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
-              }
+              }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
+              }             
             })
         }
         

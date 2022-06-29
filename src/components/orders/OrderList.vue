@@ -93,11 +93,22 @@
       this.isLoading = true;
       axios.post('http://127.0.0.1:8000/api/getalluserorder',{
       'name':this.query.search,
-      }
+      },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }
       ).then((response) => {
         if(response.data.status == 200){
           this.userData = response.data.data;
-        }else{
+        }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
+              }else{
          this.userData = [];
        }
        this.isLoading = false;
@@ -110,7 +121,10 @@
       }
     },
     formatNumber(number) {
-      return Intl.NumberFormat().format(number);
+       return Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+        }).format(number);
     },
 },
 

@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-  <div v-if="userDetails ==''" style="background: skyblue;">
+  <div v-if="userDetails =='' || userDetails ==null" style="background: skyblue;">
     <div class="text-center" >
       <span class="fs-5 d-none d-sm-inline"><img src="/icon.png" class="icon-style" /> Welcome To Product-Cart !!!</span>
       <hr>
@@ -23,7 +23,7 @@ export default {
       };
     },
   mounted(){
- this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
   },
 
   methods: {

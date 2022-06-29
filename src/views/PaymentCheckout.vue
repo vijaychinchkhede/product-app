@@ -79,7 +79,15 @@ export default {
       loadData () {
         axios.post('http://127.0.0.1:8000/api/getusercartitems',{
           'user_id' :this.userDetails.user_id,
-        }
+        },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }
         ).then((response) => {
           if(response.data.status == 200){
             this.cartData = response.data.data;

@@ -23,10 +23,8 @@
               type="number"
               class="form-control"
               v-model="price"
-               @input="numberValidate"
               />
               <ErrorMessage name="price" class="text-danger" />
-              <span class="text-danger">{{priceError}}</span>
             </div>
           </div>
           <div class="form-group row">
@@ -101,7 +99,6 @@
         'ACTIVE','INACTIVE'
         ],
         statusError:'',
-        priceError:'',
       };
     },
     components: {
@@ -129,7 +126,15 @@
     getproductdetailsbyid(){
       axios.post('http://127.0.0.1:8000/api/getproductdetailsbyid',{
         'product_id' : this.id
-      }
+      },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }
       ).then((response) => {
         if(response.data.status == 200){
          this.productDetail = response.data.data;
@@ -149,7 +154,15 @@
           'price': this.price,
           'description': this.description,
           'status':this.productStatus ? this.productStatus.toLowerCase() :'',
-        }).then((response) => {
+        },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
           if(response.data.status == 200){
             this.$swal.fire({
               text: "Success, Product has been updated successfully !",
@@ -161,6 +174,9 @@
               timer: 1000,
             });
             this.$router.push({ name: "Products" });
+          }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
           }else{
             Swal.fire({
               icon: 'error',
@@ -172,14 +188,7 @@
         })
       }
     },
-     numberValidate(){
-      if(this.price < 0){
-        this.priceError = "Price is not valid";
-      }else{
-        this.priceError = '';
-      }
-    }
-
+  
   },
 
   
@@ -187,8 +196,8 @@
   setup() {
     // Define a validation schema
     const schema = yup.object({
-      name: yup.string().required().min(5),
-      price: yup.string().required(),
+      name: yup.string().required().min(3),
+      price: yup.number().required().positive().integer(),
       description: yup.string().required().min(5),
     });
 

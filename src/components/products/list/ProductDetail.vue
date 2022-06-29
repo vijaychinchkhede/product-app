@@ -1,13 +1,13 @@
 <template>
   <td>{{ index + 1 }}</td>
-  <td>{{ product.name}}</td>
-  <td>{{ product.description}}</td>
+  <td class='col-2'>{{ product.name}}</td>
+  <td class='col-4'>{{ product.description}}</td>
   <td>{{ formatNumber(product.price) }}</td>
   <td v-if="userStatus == 1">{{ formatString(product.status)}}</td>
   <td v-if="userStatus==1" ><router-link :to="{ name: 'ProductEdit', params: { id: product.id } }"
     class="btn btn-primary" title="Edit Product">
     <i class="fa fa-pencil"></i></router-link>
-    <button class="btn btn-danger ml-2 ms-2" @click="deleteProduct(product.id)" title="Delete Product">
+    <button class="btn btn-danger ml-2 ms-1" @click="deleteProduct(product.id)" title="Delete Product">
      <i class="fa fa-trash"></i>
    </button>
   </td>
@@ -80,6 +80,9 @@
                 padding: '3em',
                 timer: 1000,
               });
+            }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
             }else{
               Swal.fire({
                 icon: 'error',
@@ -96,7 +99,15 @@
       deleteProduct(id){
         axios.post('http://127.0.0.1:8000/api/deleteproduct',{
           'product_id' : id,
-        }).then((response) => {
+        },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
           if(response.data.status == 200){
             this.$swal.fire({
               text: "Success, Product has been deleted successfully !",
@@ -108,7 +119,10 @@
               timer: 1000,
             });
             window.location.href = '/';
-          }else{
+          }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
+           }else{
             Swal.fire({
               icon: 'error',
               title: 'Oops...',
@@ -119,7 +133,10 @@
         })
       },
       formatNumber(number) {
-        return Intl.NumberFormat().format(number);
+         return Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+        }).format(number);
       },
       formatString(string){
         return string.toUpperCase();  

@@ -74,8 +74,12 @@ const routes = [
     name: 'Product Category',
     component: () => import('../components/products/list/ProductListCategory.vue')
   },
-  
- {
+  {
+    path: '/user/edit/:id',
+    name: 'UserEdit',
+    component: () => import('../components/user/UserEdit.vue')
+  },
+  {
     path: '/success',
     name: 'Payment Success',
     component: () => import('../views/Success.vue')

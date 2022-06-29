@@ -108,10 +108,22 @@
             axios.post(url,{
             'name':this.query.search,
             'category':this.category,
-            }).then((response) => {
+            "token" : localStorage.token,
+            },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+              }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
               }
             })
         }else{
@@ -119,16 +131,106 @@
             axios.post(url,{
             'name':this.query.search,
             'category':this.category,
+            "token" : localStorage.token,
+            },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
             }
+          }
             ).then((response) => {
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+              }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
               }
             })
         }
         
         
+      },
+      addToCart(p_id,p_name){
+        if(this.userDetails){
+          axios.post('http://127.0.0.1:8000/api/addtocart',{
+            'user_id':this.userDetails.user_id,
+            'product_id':p_id,
+            'product_name':p_name,
+          },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }
+          ).then((response) => {
+            if(response.data.status == 200){
+              this.$swal.fire({
+                text: "Success, Product has been added to cart successfully !",
+                icon: "success",
+                position: "center",
+                width: 400,
+                height: 100,
+                padding: '3em',
+                timer: 1000,
+              });
+            }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
+            }else{
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                timer: 1000,
+              })
+            }
+          })
+        }else{
+          window.location.href = '/login';
+        }
+      },
+      deleteProduct(id){
+        axios.post('http://127.0.0.1:8000/api/deleteproduct',{
+          'product_id' : id,
+        },{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
+          if(response.data.status == 200){
+            this.$swal.fire({
+              text: "Success, Product has been deleted successfully !",
+              icon: "success",
+              position: "center",
+              width: 400,
+              height: 100,
+              padding: '3em',
+              timer: 1000,
+            });
+            window.location.href = '/';
+          }else if(response.data.status == 401){
+                localStorage.clear();
+                window.location.href = '/login';
+           }else{
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong!',
+              timer: 1000,
+            })
+          }
+        })
       },
       searchProducts(){
         if(this.query.search.length >=3 || this.query.search.length ==0 ){
@@ -136,7 +238,10 @@
         }
       },
       formatNumber(number) {
-        return Intl.NumberFormat().format(number);
+         return Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+        }).format(number);
       },
       formatString(string){
         return string.toUpperCase();  
