@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="container">
   <div class="text-align-center">
       <span> Name : {{userDetails.name}}</span>

@@ -147,7 +147,7 @@
      })
     },
     updateProduct(){
-      if(this.statusError == '' && this.priceError == ''){
+      if(this.statusError == ''){
         axios.post('http://127.0.0.1:8000/api/updateproductdetails',{
           'product_id' : this.id,
           'name': this.name,

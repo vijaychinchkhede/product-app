@@ -16,10 +16,6 @@
               Home</router-link>
             </li>
             <li class="nav-items">
-             <!--  <router-link to="/products" class="nav-link">
-                
-              Products</router-link> -->
-
               <a class="nav-link dropdown-toggle" href="/products" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-archive"></i>
                 Product
