@@ -80,6 +80,11 @@ const routes = [
     component: () => import('../components/user/UserEdit.vue')
   },
   {
+    path: '/updateProfile',
+    name: 'Update Profile',
+    component: () => import('../components/user/UserProfileEdit.vue')
+  },
+  {
     path: '/success',
     name: 'Payment Success',
     component: () => import('../views/Success.vue')

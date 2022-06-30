@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-  <h4>Edit User</h4>
+  <h4>Update Profile.</h4>
     <div class="card">
       <div class="card-body">
         <Form @submit="onSubmit" :validation-schema="schema">
@@ -42,15 +42,10 @@
               <ErrorMessage name="email" class="text-danger"/>
               <span class="text-danger">{{emailerror}}</span>
             </div>
-            <div class="col-6">
-              <label>User Type:  <span class="text-danger">*</span></label>
-              <vue-select
-              v-model="userType"
-              :options="options"
-              close-on-select
-              ></vue-select>
-              <span class="text-danger">{{userTypeError}}</span>
-            </div>
+            <!-- <div class="col-6">
+              <label>Upload Image: </label>
+              <input class="form-control" ref="fileInput" type="file" @input="pickFile">
+            </div> -->
           </div>
           <div class="text-center">
             <br>
@@ -59,7 +54,7 @@
               <input
                 type="submit"
                 class="btn btn-primary ms-2"
-                value="Edit User" 
+                value="Update" 
                 v-if="!isCreating"
               />
               <button class="btn btn-primary" type="button" disabled v-if="isCreating">
@@ -77,7 +72,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 import { Field, Form, ErrorMessage } from "vee-validate";
@@ -93,7 +87,9 @@ export default {
       userType:'',
       userTypeError:'',
       emailerror:'',
+      mobileError:'',
       userData:'',
+      profileImage:'',
       options:[
         'admin','user'
         ],
@@ -125,20 +121,29 @@ export default {
     },
   },
   mounted(){
-    this.id = this.$route.params.id;
+    
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
-      if(this.userDetails && this.userDetails.userType =='admin'){
+      if(this.userDetails){
         this.isLoading = true;
         this.loadData();
       }else{
         this.$router.push({ name: "Login" });
       }
+    
+    
   },
 
   methods: {
+    pickFile () {
+        let input = this.$refs.fileInput;
+        let file = input.files;
+        this.profileImage = file[0];
+        console.log(this.profileImage);
+        
+      },
     loadData(){
       axios.post('http://127.0.0.1:8000/api/getuserdetailsbyid',{
-            'user_id':this.id,
+            'user_id':this.userDetails.user_id,
             },{
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -160,16 +165,18 @@ export default {
             }
           })
     },
-    
+
     onSubmit() {
+      let formData = new FormData();
+      // formData.append("file", this.profileImage);
+      formData.append("user_id", this.userDetails.user_id);
+      formData.append("name", this.name);
+      formData.append("mobile_number", this.mobileNumber);
+      formData.append("email", this.email);
+      
+
       if(this.userTypeError =='' && this.emailerror == '' && this.mobileError == ''){
-        axios.post('http://127.0.0.1:8000/api/updateuserdetails',{
-            'user_id':this.id,
-            'name':this.name,
-            'mobile_number':this.mobileNumber,
-            'email':this.email,
-            'type':this.userType,
-            },{
+        axios.post('http://127.0.0.1:8000/api/updateuserprofile',formData,{
             headers: {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Headers': '*',
@@ -188,7 +195,7 @@ export default {
                 padding: '3em',
                 timer: 1000,
               });
-               this.$router.push({ path: "/users" });
+               this.$router.push({ path: "/" });
             }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';

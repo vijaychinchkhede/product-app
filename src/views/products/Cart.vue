@@ -28,15 +28,15 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody class="text-center">
+        <tbody class="text-center" v-if="!isLoading">
           <tr v-for="(data, index) in cartData" :key="data.cart_id">
             <td>{{ index + 1 }}</td>
             <td>{{ data.product_name }}</td>
-            <td>{{ data.description }}</td>
+            <td class="col-4">{{ data.description }}</td>
             <td>{{ formatNumber(data.price) }}</td>
-            <td><a class="btn" @click="updateQuantity(e=2,data.cart_id)" v-if="data.quantity >1"><i class="fa fa-minus" aria-hidden="true"></i>  </a>{{ data.quantity }}<a class="btn" @click="updateQuantity(e=1,data.cart_id)"> <i class="fa fa-plus" aria-hidden="true"></i>
+            <td class="text-end"><a class="btn" @click="updateQuantity(e=2,data.cart_id)" v-if="data.quantity >1"><i class="fa fa-minus" aria-hidden="true"></i>  </a>{{ data.quantity }}<a class="btn" @click="updateQuantity(e=1,data.cart_id)"> <i class="fa fa-plus" aria-hidden="true"></i>
             </a></td>
-            <td>{{ formatNumber(data.price*data.quantity) }}</td>
+            <td class="text-end">{{ formatNumber(data.price*data.quantity) }}</td>
             <td>
               <button  class="btn btn-danger ml-2" @click="removeProductFromCart(data.product_id)" title="Remove Product From Cart">
                  <i class="fa fa-trash"></i>
@@ -95,6 +95,7 @@
 
     methods: {
      loadData () {
+      this.isLoading = true;
       this.total = 0;
       axios.post('http://127.0.0.1:8000/api/getusercartitems',{
         'user_id' :this.userDetails.user_id,
@@ -184,6 +185,7 @@
         })
     },
     updateQuantity(e,id){
+      this.isLoading = true;
       axios.put('http://127.0.0.1:8000/api/updatecartproductquantity',{
           'cart_id' : id,
           'updateStatus':e,

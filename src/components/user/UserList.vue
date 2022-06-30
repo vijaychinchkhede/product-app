@@ -55,7 +55,7 @@
     </div>
   </div>
   <div v-if="isLoading" class="text-center mt-5 mb-5">
-    Loading Cart Products...
+    Loading Users...
     <div class="spinner-grow" role="status">
       <span class="sr-only">Loading...</span>
     </div>

@@ -70,6 +70,11 @@
               <i class="fa fa-question-circle"></i>
               Help</router-link>
             </li>
+            <li class="nav-item" v-if="userStatus == 2">
+              <router-link to="/updateProfile" class="nav-link">
+              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+              Update Profile</router-link>
+            </li>
           </ul>
           <hr>
         </div>
