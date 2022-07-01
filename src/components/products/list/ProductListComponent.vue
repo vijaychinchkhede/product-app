@@ -32,7 +32,25 @@
          </tr>
        </tbody>
      </table>
-   </div> 
+   </div>
+   <!-- pagination -->
+    <div v-if="userDetails">
+      <div class="pagination-centre" v-if="pageCount > 1">
+        <paginate
+          v-model="page"
+          :page-count="pageCount"
+          :page-range="3"
+          :margin-pages="2"
+          :click-handler="clickCallback"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+        >
+        </paginate>
+      </div>
+    </div>
+      <!-- /pagination --> 
    <div class="">
     <div v-if="isLoading" class="text-center mt-5 mb-5">
       Loading Products...
@@ -47,6 +65,7 @@
 <script>
   import axios from "axios";
   import ProductDetail from "../list/ProductDetail";
+  import Paginate from "vuejs-paginate-next";
   export default {
     data() {
       return {
@@ -56,11 +75,16 @@
         },
         productsData:[],
         isLoading:false,
-        userStatus:0
+        userStatus:0,
+        page:1,
+        total:0,
+        pageCount:0,
+        userDetails:'',
       };
     },
     components: {
       ProductDetail,
+      paginate: Paginate,
     },
     mounted(){
     this.isLoading = true;
@@ -78,11 +102,15 @@
     },
 
     methods: {
+      clickCallback(){
+        this.loadData();
+      },
       loadData () {
         if(this.userStatus == 1){
           const url = 'http://127.0.0.1:8000/api/getallproduct';
             axios.post(url,{
-            'name':this.query.search
+            'name':this.query.search,
+            'page':this.page,
             },{
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -95,16 +123,26 @@
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+                this.count = response.data.count;
+                if(this.count){
+                  this.pageCount = this.count/4;
+                }else{
+                  this.pageCount = 0;
+                }
               }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';
+              }else{
+                this.productsData = '';
+                this.count = 0;
+                this.pageCount = 0;
               }
             })
         }else{
           const url = 'http://127.0.0.1:8000/api/getallactiveproduct';
             axios.post(url,{
             'name':this.query.search,
-            "token" : localStorage.token, 
+            'page':this.page,
             },{
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -118,14 +156,22 @@
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+                this.count = response.data.count;
+                if(this.count){
+                  this.pageCount = this.count/4;
+                }else{
+                  this.pageCount = 0;
+                }
               }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';
-              }             
+              }else{
+                this.productsData = '';
+                this.count = 0;
+                this.pageCount = 0;
+              }
             })
         }
-        
-        
       },
       searchProducts(){
         if(this.query.search.length >=3 || this.query.search.length ==0 ){
@@ -134,7 +180,12 @@
       }
 
     },
-
-
-  };
+};
 </script>
+<style>
+.pagination {
+    display: flex;
+    padding-left: 415px;
+    list-style: none;
+}
+</style>

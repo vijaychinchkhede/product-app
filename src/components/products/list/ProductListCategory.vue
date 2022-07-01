@@ -7,7 +7,7 @@
       </div>
       <div class="col-4">
         <input
-        :disabled="productsData==''"
+        :disabled="productsData=='' && this.query.search.length ==0"
         type="text"
         class="form-control"
         placeholder="Search Products..."
@@ -57,6 +57,22 @@
           </tbody>
         </table>
       </div>
+      <!-- pagination -->
+      <div class="pagination-centre" v-if="pageCount > 1">
+        <paginate
+          v-model="page"
+          :page-count="pageCount"
+          :page-range="3"
+          :margin-pages="2"
+          :click-handler="clickCallback"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+        >
+        </paginate>
+      </div>
+      <!-- /pagination -->
     </div>
     <div v-if="!isLoading">
       <div class="text-center" v-if="productsData ==''" >
@@ -75,6 +91,8 @@
 <script>
   import axios from "axios";
   import '/src/servise/productApiServices';
+  import Paginate from "vuejs-paginate-next";
+  
   export default {
     data() {
       return {
@@ -88,7 +106,13 @@
         isLoading:false,
         userStatus:0,
         category:0,
+        page:1,
+        total:0,
+        pageCount:0,
       };
+    },
+    components: {
+      paginate: Paginate,
     },
 
     mounted(){
@@ -109,6 +133,9 @@
     },
 
     methods: {
+      clickCallback(){
+        this.loadData();
+      },
       loadData () {
         this.isLoading = true;
         if(this.userStatus == 1){
@@ -117,6 +144,7 @@
             'name':this.query.search,
             'category':this.category,
             "token" : localStorage.token,
+            'page':this.page,
             },{
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -129,9 +157,19 @@
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+                this.count = response.data.count;
+                if(this.count){
+                  this.pageCount = this.count/4;
+                }else{
+                  this.pageCount = 0;
+                }
               }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';
+              }else{
+                this.productsData = '';
+                this.count = 0;
+                this.pageCount = 0;
               }
             })
         }else{
@@ -140,6 +178,7 @@
             'name':this.query.search,
             'category':this.category,
             "token" : localStorage.token,
+            'page':this.page,
             },{
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -153,9 +192,20 @@
               this.isLoading = false;
               if(response.data.status == 200){
                 this.productsData = response.data.data;
+                this.count = response.data.count;
+                if(this.count){
+                  this.pageCount = this.count/4;
+                }else{
+                  this.pageCount = 0;
+                }
+                
               }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';
+              }else{
+                this.productsData = '';
+                this.count = 0;
+                this.pageCount = 0;
               }
             })
         }
@@ -302,6 +352,11 @@
 <style>
 .form-switch {
     padding-left: 3.5em;
+}
+.pagination {
+    display: flex;
+    padding-left: 415px;
+    list-style: none;
 }
 
 </style>

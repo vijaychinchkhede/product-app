@@ -7,11 +7,14 @@ import "font-awesome/css/font-awesome.min.css";
 import '../node_modules/nprogress/nprogress.css';
 import VueSelect from 'vue-next-select';
 import 'vue-next-select/dist/index.min.css';
+import Paginate from "vuejs-paginate-next";
+
 
 
 const app = createApp(App);
 app.use(VueSweetalert2);
 app.use(router);
+app.use('paginate', Paginate)
 
 app.config.devtools = true;
 app.mount('#app');

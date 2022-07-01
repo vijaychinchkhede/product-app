@@ -39,6 +39,22 @@
         </tbody>
       </table>
     </div>
+    <!-- pagination -->
+      <div class="pagination-centre" v-if="pageCount > 1">
+        <paginate
+          v-model="page"
+          :page-count="pageCount"
+          :page-range="3"
+          :margin-pages="2"
+          :click-handler="clickCallback"
+          :prev-text="'Prev'"
+          :next-text="'Next'"
+          :container-class="'pagination'"
+          :page-class="'page-item'"
+        >
+        </paginate>
+      </div>
+      <!-- /pagination -->
     <div v-if="!isLoading">
       <div class="text-center" v-if='userData.length == 0'>
         <span > No data found </span>
@@ -55,7 +71,7 @@
 
 <script>
   import axios from "axios";
-  import { StripeCheckout } from '@vue-stripe/vue-stripe';
+  import Paginate from "vuejs-paginate-next";
   export default {
     data() {
       return {
@@ -70,12 +86,17 @@
         data:[
         'status'
         ],
-        lineItems: [],
         userData:[],
         userDetails:'',
         total:0,
         isLoading:false,
+        page:1,
+        total:0,
+        pageCount:0,
       };
+    },
+    components: {
+      paginate: Paginate,
     },
 
     mounted(){
@@ -89,10 +110,14 @@
     },
 
     methods: {
+      clickCallback(){
+        this.loadData();
+      },
      loadData () {
       this.isLoading = true;
       axios.post('http://127.0.0.1:8000/api/getalluserorder',{
       'name':this.query.search,
+      'page':this.page,
       },{
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -105,11 +130,19 @@
       ).then((response) => {
         if(response.data.status == 200){
           this.userData = response.data.data;
+          this.count = response.data.count;
+            if(this.count){
+              this.pageCount = this.count/10;
+            }else{
+              this.pageCount = 0;
+            }
         }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';
-              }else{
+        }else{
          this.userData = [];
+         this.count = 0;
+         this.pageCount = 0;
        }
        this.isLoading = false;
      })
