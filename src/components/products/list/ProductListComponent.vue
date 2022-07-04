@@ -18,7 +18,7 @@
       <table class="table table-striped">
         <thead class="text-center">
           <tr>
-            <th>Sr.No.</th>
+            <!-- <th>Sr.No.</th> -->
             <th>Name</th>
             <th>Details</th>
             <th>Price</th>

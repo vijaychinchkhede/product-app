@@ -21,7 +21,7 @@
         <table class="table table-striped">
           <thead class="text-center">
             <tr>
-              <th>Sr.No.</th>
+              <!-- <th>Sr.No.</th> -->
               <th>Name</th>
               <th>Details</th>
               <th>Price</th>
@@ -31,7 +31,7 @@
           </thead>
           <tbody class="text-center">
             <tr v-for="(product, index) in productsData" :key="product.id">
-              <td>{{ index + 1 }}</td>
+              <!-- <td>{{ index + 1 }}</td> -->
               <td class="text-start">{{ product.name}}</td>
               <td class="text-start">{{ product.description}}</td>
               <td class="text-end">{{ formatNumber(product.price) }}</td>
@@ -138,14 +138,14 @@
       },
       loadData () {
         this.isLoading = true;
+        let formData = new FormData();
+        formData.append("name", this.query.search);
+        formData.append("category", this.category);
+        formData.append("page", this.page);
+       
         if(this.userStatus == 1){
           const url = 'http://127.0.0.1:8000/api/getallproduct';
-            axios.post(url,{
-            'name':this.query.search,
-            'category':this.category,
-            "token" : localStorage.token,
-            'page':this.page,
-            },{
+            axios.post(url,formData,{
             headers: {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Headers': '*',
@@ -174,12 +174,7 @@
             })
         }else{
           const url = 'http://127.0.0.1:8000/api/getallactiveproduct';
-            axios.post(url,{
-            'name':this.query.search,
-            'category':this.category,
-            "token" : localStorage.token,
-            'page':this.page,
-            },{
+            axios.post(url,formData,{
             headers: {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Headers': '*',

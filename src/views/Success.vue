@@ -1,5 +1,5 @@
 <template>
-  <h1> Payment successfuly !!!</h1>
+  <h1 class="text-center"> Payment successfuly !!!</h1>
 </template>
 
 <script>
@@ -26,13 +26,12 @@ export default {
         const arrayLength = this.cartData.length;
             var i = 0;
             for(i;i<arrayLength;i++){
-                const obj = this.cartData[i].id;
+                const obj = this.cartData[i].product_id;
                 this.productIDs.push(obj);
                 const obj1 = this.cartData[i].product_name;
                 this.products.push(obj1);
             }
-
-        this.onLoad();
+       this.onLoad();
       }
   },
 
@@ -40,13 +39,23 @@ export default {
   methods: {
     
     onLoad() {
+      let formData = new FormData();
+        formData.append("user_id", this.userDetails.user_id);
+        formData.append("product_ids", this.productIDs);
+        formData.append("amount_paid", this.totalPrice);
+        formData.append("products", this.products);
+        formData.append("email", this.userDetails.email);
+        formData.append("email_status", this.userDetails.email_status);
+        formData.append("user_name", this.userDetails.name);
 
-      axios.post('http://127.0.0.1:8000/api/createorder',{
-        'user_id':this.userDetails.user_id,
-        'product_ids':this.productIDs,
-        'amount_paid':this.totalPrice,
-        'products':this.products,
-            }).then((response) => {
+      axios.post('http://127.0.0.1:8000/api/createorder',formData,{
+        headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }}).then((response) => {
             if(response.data.status == 200){
                 this.$swal.fire({
                  text: "Success, Your order placed successfully !",

@@ -1,3 +1,3 @@
 <template>
-    <h1>Payment failed, pleasae try again</h1>
+    <h1 class="text-center">Payment failed, pleasae try again</h1>
 </template>

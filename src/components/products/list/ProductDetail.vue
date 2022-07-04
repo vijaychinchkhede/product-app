@@ -1,7 +1,7 @@
 <template>
-  <td>{{ index + 1 }}</td>
+  <!-- <td>{{ index + 1 }}</td> -->
   <td class='col-2'>{{ product.name}}</td>
-  <td class='col-4'>{{ product.description}}</td>
+  <td class='text-start'>{{ product.description}}</td>
   <td class="text-end">{{ formatNumber(product.price) }}</td>
   <td v-if="userStatus == 1">{{ formatString(product.status)}}</td>
   <td v-if="userStatus==1" ><router-link :to="{ name: 'ProductEdit', params: { id: product.id } }"

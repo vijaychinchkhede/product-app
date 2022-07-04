@@ -91,6 +91,7 @@
   import "bootstrap/dist/js/bootstrap.min.js"
   import Footer from "./footer/Footer";
   import Header from "./header/Header";
+  import axios from "axios";
   export default {
     name: "Layout",
     data() {
@@ -122,9 +123,41 @@
     },
     methods: {
       logout(){
-        localStorage.clear();
-        window.location.href = '/';
-       //window.location.reload();
+        let formData = new FormData();
+        formData.append("user_id", this.userDetails.user_id);
+
+        axios.post('http://127.0.0.1:8000/api/logoutuser',formData,{
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              "Allow": "POST",
+              "Content-type": "Application/json",
+            }
+          }).then((response) => {
+            if(response.data.status == 200){
+              this.$swal.fire({
+                text: "Success, User has been logout successfully !",
+                icon: "success",
+                position: "center",
+                width: 400,
+                height: 100,
+                padding: '3em',
+                timer: 1000,
+              });
+             localStorage.clear();
+              window.location.href = '/';
+              //window.location.reload();
+            }else{
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+                timer: 1000,
+              })
+            }
+          })
+        
      },
      productCategory(e){
       localStorage.setItem('productCategory',e);

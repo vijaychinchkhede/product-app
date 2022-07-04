@@ -46,6 +46,11 @@
               <label>Upload Image: </label>
               <input class="form-control" ref="fileInput" type="file" @input="pickFile">
             </div> -->
+            <div class="col-6">
+              <label>Password : <span class="text-danger">*</span></label><br>
+              <input v-model="password" placeholder="password *" type="password"><br>
+              <span class="text-danger">{{password_error}} </span>
+            </div>
           </div>
           <div class="text-center">
             <br>
@@ -90,6 +95,8 @@ export default {
       mobileError:'',
       userData:'',
       profileImage:'',
+      password:'',
+      password_error:'',
       options:[
         'admin','user'
         ],
@@ -119,9 +126,15 @@ export default {
         }
       }
     },
+    password(val){
+      if(val){
+        this.password_error = "";
+      }else{
+        this.password_error = "Please enter password";
+      }
+    }
   },
   mounted(){
-    
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
       if(this.userDetails){
         this.isLoading = true;
@@ -129,8 +142,6 @@ export default {
       }else{
         this.$router.push({ name: "Login" });
       }
-    
-    
   },
 
   methods: {
@@ -158,7 +169,8 @@ export default {
              this.name = this.userData.name;
              this.mobileNumber = this.userData.mobile_number;
              this.email = this.userData.email;
-             this.userType = this.userData.type;  
+             this.userType = this.userData.type;
+             this.password = this.userData.profile_password;  
             }else if(response.data.status == 401){
                 localStorage.clear();
                 window.location.href = '/login';
@@ -173,9 +185,9 @@ export default {
       formData.append("name", this.name);
       formData.append("mobile_number", this.mobileNumber);
       formData.append("email", this.email);
+      formData.append("password", this.password);
       
-
-      if(this.userTypeError =='' && this.emailerror == '' && this.mobileError == ''){
+      if(this.userTypeError =='' && this.emailerror == '' && this.mobileError == '' && this.password_error ==''){
         axios.post('http://127.0.0.1:8000/api/updateuserprofile',formData,{
             headers: {
               'Access-Control-Allow-Origin': '*',
