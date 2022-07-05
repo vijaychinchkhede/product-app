@@ -2,6 +2,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue';
 import Helper from '../views/Helper.vue';
 import NProgress from 'nprogress';
+import About from '../views/About.vue';
+import ProductList from '../views/products/ProductList.vue';
+import ProductCreate from '../views/products/ProductCreate.vue';
+import ProductEdit from '../views/products/ProductEdit.vue';
+import Login from '../views/Login.vue';
+import Register from '../views/Register.vue';
+import Cart from '../views/products/Cart.vue';
+import PaymentCheckout from '../views/PaymentCheckout.vue';
+import Order from '../views/products/Order.vue';
+import UserList from '../components/user/UserList.vue';
+import OrderList from '../components/orders/OrderList.vue';
+import ProductListCategory from '../components/products/list/ProductListCategory.vue';
+import UserEdit from '../components/user/UserEdit.vue';
 
 const routes = [
   {
@@ -17,67 +30,67 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('../views/About.vue')
+    component: About
   },
   {
     path: '/products',
     name: 'Products',
-    component: () => import('../views/products/ProductList.vue')
+    component: ProductList 
   },
   {
     path: '/products/create',
     name: 'Product Create',
-    component: () => import('../views/products/ProductCreate.vue')
+    component: ProductCreate 
   },
   {
     path: '/products/edit/:id',
     name: 'ProductEdit',
-    component: () => import('../views/products/ProductEdit.vue')
+    component: ProductEdit
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: Login
   },
    {
     path: '/register',
     name: 'Register',
-    component: () => import('../views/Register.vue')
+    component: Register
   },
   {
     path: '/cart',
     name: 'Crat',
-    component: () => import('../views/products/Cart.vue')
+    component: Cart
   },
   {
     path: '/checkout',
     name: 'Checkout',
-    component: () => import('../views/PaymentCheckout.vue')
+    component: PaymentCheckout
   },
   {
     path: '/order',
     name: 'Order',
-    component: () => import('../views/products/Order.vue')
+    component: Order
   },
   {
     path: '/users',
     name: 'Users',
-    component: () => import('../components/user/UserList.vue')
+    component: UserList
   },
   {
     path: '/allorders',
     name: 'All Orders',
-    component: () => import('../components/orders/OrderList.vue')
+    component: OrderList
   },
   {
     path: '/product/category',
     name: 'Product Category',
-    component: () => import('../components/products/list/ProductListCategory.vue')
+    component: ProductListCategory
   },
   {
     path: '/user/edit/:id',
     name: 'UserEdit',
-    component: () => import('../components/user/UserEdit.vue')
+    component: UserEdit
   },
   {
     path: '/updateProfile',
