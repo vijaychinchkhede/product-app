@@ -15,6 +15,11 @@ import UserList from '../components/user/UserList.vue';
 import OrderList from '../components/orders/OrderList.vue';
 import ProductListCategory from '../components/products/list/ProductListCategory.vue';
 import UserEdit from '../components/user/UserEdit.vue';
+import UserProfileEdit from '../components/user/UserProfileEdit.vue';
+import Success from '../views/Success.vue';
+import Error from '../views/Error.vue';
+import NotFound from '../views/NotFound.vue';
+import Dashboard from '../components/admin/Dashboard.vue';
 
 const routes = [
   {
@@ -95,22 +100,27 @@ const routes = [
   {
     path: '/updateProfile',
     name: 'Update Profile',
-    component: () => import('../components/user/UserProfileEdit.vue')
+    component: UserProfileEdit
   },
   {
     path: '/success',
     name: 'Payment Success',
-    component: () => import('../views/Success.vue')
+    component: Success
   },
-   {
+  {
     path: '/error',
     name: 'Payment Fail',
-    component: () => import('../views/Error.vue')
+    component: Error
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
   },
   {
     path: '/:catchAll(.*)',
     name: 'Page Not Found',
-    component: () => import('../views/NotFound.vue')
+    component: NotFound
   }
 ]
 

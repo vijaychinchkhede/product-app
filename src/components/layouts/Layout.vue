@@ -15,6 +15,12 @@
                 <i class="fa fa-home"></i>
               Home</router-link>
             </li>
+            <li class="nav-item" v-if="userStatus == 1">
+              <router-link to="/dashboard" class="nav-link">
+                <i class="fa fa-tachometer"></i>
+                Dashboard
+              </router-link>
+            </li>
             <li class="nav-items">
               <a class="nav-link dropdown-toggle" href="/products" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-archive"></i>
