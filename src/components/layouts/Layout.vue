@@ -93,8 +93,8 @@
 </template>
 
 <script>
-  import "/public/css/bootstrap.min.css";
-  import "/public/js/bootstrap.min.js";
+  import "/public/bootstrap.min.css";
+  import "/public/bootstrap.min.js";
   import Footer from "./footer/Footer";
   import Header from "./header/Header";
   import axios from "axios";
